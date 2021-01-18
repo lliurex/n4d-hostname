@@ -1,0 +1,59 @@
+{
+    "SETUP": {
+        "type": "python",
+        "path": "Hostname.py",
+        "class": "Hostname"
+    },
+    "METHODS": {
+        "info": {
+            "allowed_groups": [
+                "anonymous"
+            ]
+        },
+        "test": {
+            "allowed_groups": [
+                "anonymous"
+            ]
+        },
+        "set_hostname_n4d": {
+            "allowed_groups": [
+                "sudo",
+                "admins"
+            ]
+        },
+        "set_hostname_file": {
+            "allowed_groups": [
+                "sudo",
+                "admins"
+            ]
+        },
+        "set_hosts_file": {
+            "allowed_groups": [
+                "sudo",
+                "admins"
+            ]
+        },
+        "get_hostname_n4d": {
+            "allowed_groups": [
+                "anonymous"
+            ]
+        },
+        "get_hostname_file": {
+            "allowed_groups": [
+                "anonymous"
+            ]
+        },
+       "backup": {
+            "allowed_groups": [
+                "sudo",
+                "admins"
+            ]
+        },
+        "restore": {
+            "allowed_groups": [
+                "sudo",
+                "admins"
+            ]
+        }
+    }
+}
