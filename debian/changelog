@@ -1,0 +1,66 @@
+n4d-hostname (0.21) bionic; urgency=medium
+
+  * Adding sudo groups
+
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Thu, 14 Feb 2019 11:22:54 +0100
+
+n4d-hostname (0.2) bionic; urgency=high
+
+  * First bionic release
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 25 Jan 2019 09:30:21 +0100
+
+n4d-hostname (0.1.11) xenial; urgency=high
+
+  * First xenial release
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 01 Feb 2016 14:41:21 +0100
+
+n4d-hostname (0.1.10) trusty; urgency=high
+
+  * Added python-minimal as build depends
+
+ -- Alfons Lloret Sananton <turix13@gmail.com>  Tue, 30 Sep 2014 16:11:51 +0200
+
+n4d-hostname (0.1.9) trusty; urgency=medium
+
+  *  New releases for LliureX 15.06
+
+ --  Alfons Lloret Sananton <turix13@gmail.com>  Tue, 30 Sep 2014 14:04:53 +0200
+
+n4d-hostname (0.1.8) precise; urgency=high
+
+  [ Daniel Duran Vecino ]
+  * Adding new methods Backup & Restore
+
+ -- Daniel Duran Vecino <daduve@gmail.com>  Thu, 18 Sep 2014 14:01:01 +0200
+
+n4d-hostname (0.1.7) precise; urgency=low
+
+  * Update hostname on /etc/hosts file
+
+ -- Raul Rodrigo Segura <raurodse@gmail.com>  Wed, 29 May 2013 10:24:17 +0200
+
+n4d-hostname (0.1.6) precise; urgency=low
+
+  * Updated build-depends with n4d
+
+ -- Angel Berlanas Vicente <angel.berlanas@gmail.com>  Fri, 19 Apr 2013 11:27:06 +0200
+
+n4d-hostname (0.1.5) precise; urgency=low
+
+  * Fixed method
+
+ -- Angel Berlanas Vicente <angel.berlanas@gmail.com>  Fri, 19 Apr 2013 10:48:02 +0200
+
+n4d-hostname (0.1.4) precise; urgency=low
+
+  * Updated version
+
+ -- Angel Berlanas Vicente <angel.berlanas@gmail.com>  Fri, 19 Apr 2013 10:40:31 +0200
+
+n4d-hostname (0.1.3) precise; urgency=low
+
+  * Initial release.
+
+ -- Angel Berlanas Vicente <lliurex_devel2@edu.gva.es>  Fri, 20 Jul 2012 08:33:21 +0200
