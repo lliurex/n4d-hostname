@@ -1,6 +1,5 @@
 {
     "HOSTNAME": {
-        "function": "lliurex.variables.hostname.init", 
         "packages": [
             "n4d-hostname"
         ], 
