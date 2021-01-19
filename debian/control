@@ -2,8 +2,8 @@ Source: n4d-hostname
 Section: misc
 Priority: standard
 Maintainer: Equipo LliureX <lliurex@gva.es>
-Build-Depends: debhelper (>= 8), n4d-dev, python-minimal
-Standards-Version: 3.9.7
+Build-Depends: debhelper (>= 10), n4d-dev, python3-minimal
+Standards-Version: 4.1.2
 
 Package: n4d-hostname
 Architecture: all
