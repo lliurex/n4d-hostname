@@ -75,7 +75,7 @@ class Hostname:
 						self.set_hostname_n4d('client-sense-registrar')
 						self.set_hostname_file('client-sense-registrar')
 						#Old n4d: return {'status':True, 'msg':'[Hostanme] Server is unreachable and client is not registered'}
-						return n4d.responses.build_successful_call_response('[Hostname] Server is unreachable and client is not registered')
+						return n4d.responses.build_successful_call_response('','[Hostname] Server is unreachable and client is not registered')
 
 					# If server is connected but not name for this machine 
 					if not status:
@@ -85,13 +85,13 @@ class Hostname:
 						self.set_hostname_n4d(dns_name)
 						self.set_hostname_file(dns_name)
 						#Old n4d:return {'status':True, 'msg':'[Hostanme] Client is not registered'}
-						return n4d.responses.build_successful_call_response('[Hostname] Client is not registered')
+						return n4d.responses.build_successful_call_response('','[Hostname] Client is not registered')
 						
 					if current_name == dns_name and current_name == list_variables['HOSTNAME']:
 						# All is done and correct
 						# N4D == /etc/hostname == DNSMASQ
 						#Old n4d: return {'status':True, 'msg':'[Hostanme] All is in place'}
-						return n4d.responses.build_successful_call_response('[Hostname] All is in place')
+						return n4d.responses.build_successful_call_response('','[Hostname] All is in place')
 						
 					elif current_name != dns_name:
 						# If server != /etc/hostname 
@@ -100,18 +100,18 @@ class Hostname:
 						self.set_hostname_n4d(dns_name)
 						self.set_hostname_file(dns_name)
 						#Old n4d: return {'status':True, 'msg':'[Hostanme] hostname is setted : server != /etc/hostname'}
-						return n4d.responses.build_successful_call_response( '[Hostname] hostname is setted : server != /etc/hostname')
+						return n4d.responses.build_successful_call_response( '','[Hostname] hostname is setted : server != /etc/hostname')
 					
 					elif current_name != list_variables['HOSTNAME']:
 						# If n4d != /etc/hostname
 						# n4d >>  /etc/hostname
 						self.set_hostname_file(list_variables['HOSTNAME'])
 						#Old n4d:return {'status':True, 'msg':'[Hostanme] hostname is setted: n4d != /etc/hostname '}
-						return n4d.responses.build_successful_call_response('[Hostname] hostname is setted: n4d != /etc/hostname ')
+						return n4d.responses.build_successful_call_response('','[Hostname] hostname is setted: n4d != /etc/hostname ')
 
 				except Exception as e:
 					#Old n4d: return {'status':False, 'msg':'[Hostanme] ERROR:'+str(e)}
-					return n4d.responses.build_failed_call_response('[Hostname] ERROR:'+str(e))
+					return n4d.responses.build_failed_call_response('','[Hostname] ERROR:'+str(e))
 
 				
 			# end if "client"
@@ -148,7 +148,7 @@ class Hostname:
 		Show basic info about this plugin
 		'''	
 		#Old n4d: return {'status':True, 'msg':'[Hostanme] Manage machine hostname'}
-		return n4d.responses.build_successful_call_response('[Hostname] Manage machine hostname')
+		return n4d.responses.build_successful_call_response('','[Hostname] Manage machine hostname')
 
 		
 	#def apt
@@ -172,12 +172,12 @@ class Hostname:
 			#objects['VariablesManager'].init_variable('HOSTNAME',{'hostname':hostname})
 			#return {'status': True, 'msg':'[Hostname] is setted at n4d to '+hostname+' n4d-vars '}
 			self.core.set_variable("HOSTNAME",hostname)
-			return n4d.responses.build_successful_call_response('[Hostname] is setted at n4d to '+hostname+' n4d-vars ')
+			return n4d.responses.build_successful_call_response('','[Hostname] is setted at n4d to '+hostname+' n4d-vars ')
 			
 		except Exception as e:
 			print(str(e))
 			#Old n4d: return {'status': False, 'msg':'[Hostname] is not setted at n4d to '+hostname+' '}
-			return n4d.responses.build_failed_call_response('[Hostname] is not setted at n4d to '+hostname+' ')
+			return n4d.responses.build_failed_call_response('','[Hostname] is not setted at n4d to '+hostname+' ')
 		
 	#def set_hostname_n4d(self,hostname)
 	
@@ -194,12 +194,12 @@ class Hostname:
 			#subprocess.check_output(["hostname","-F",Hostname.HOSTNAME_FILE])
 			subprocess.check_output(["service","hostname","restart"])
 			#Old n4d: return {'status': True, 'msg':'[Hostname] is setted by n4d to '+hostname+'  at '+ Hostname.HOSTNAME_FILE}
-			return n4d.responses.build_successful_call_response('[Hostname] is setted by n4d to '+hostname+'  at '+ Hostname.HOSTNAME_FILE)
+			return n4d.responses.build_successful_call_response('','[Hostname] is setted by n4d to '+hostname+'  at '+ Hostname.HOSTNAME_FILE)
 
 		except Exception as e:
 
 			#Old n4d:return {'status': False, 'msg':'[Hostname] Hostname not setted :'+ str(e)}
-			return n4d.responses.build_failed_call_response('[Hostname] Hostname not setted :'+ str(e))
+			return n4d.responses.build_failed_call_response('','[Hostname] Hostname not setted :'+ str(e))
 
 	#def set_hostname_file
 	
@@ -217,11 +217,11 @@ class Hostname:
 					f.write(x)
 			f.close()
 			#return {'status': True, 'msg':hostname + ' is updated on /etc/hosts'}	
-			return n4d.responses.build_successful_call_response(hostname + ' is updated on /etc/hosts')	
+			return n4d.responses.build_successful_call_response('',hostname + ' is updated on /etc/hosts')	
 
 		except Exception as e:
 			#Old n4d: return {'status': False, 'msg':str(e)}
-			return n4d.responses.build_failed_call_response(str(e))
+			return n4d.responses.build_failed_call_response('',str(e))
 
 	#def set_hosts_file
 	
@@ -242,7 +242,7 @@ class Hostname:
 		except Exception as e:
 			
 			#Old n4d: return {'status': False, 'msg':'[Hostname] Hostname not set at n4d : '+ str(e)}
-			return n4d.responses.build_failed_call_response('[Hostname] Hostname not set at n4d : '+ str(e))
+			return n4d.responses.build_failed_call_response('','[Hostname] Hostname not set at n4d : '+ str(e))
 
 	#def get_n4d_hostname(self):
 
@@ -264,7 +264,7 @@ class Hostname:
 		except Exception as e:
 		
 			#Old n4d:return {'status': False, 'msg':'[Hostname] Hostname not getted '+ str(e)}
-			return n4d.responses.build_failed_call_response('[Hostanme] Hostname not getted :'+ str(e) )
+			return n4d.responses.build_failed_call_response('','[Hostanme] Hostname not getted :'+ str(e) )
 	
 	#def get_hostname_file(self):
 	
@@ -306,7 +306,7 @@ class Hostname:
 		except Exception as e:
 				print("Backup failed", str(e))
 				#Old n4d: return [False,str(e)]
-				return n4d.responses.build_failed_call_response(str(e))
+				return n4d.responses.build_failed_call_response('',str(e))
 
 	#def backup
 	
@@ -353,7 +353,7 @@ class Hostname:
 			
 			print ("Restored failed", str(e))
 			#return [False,str(e)]
-			return n4d.responses.build_failed_call_response(str(e))
+			return n4d.responses.build_failed_call_response('',str(e))
 
 		
 		pass
