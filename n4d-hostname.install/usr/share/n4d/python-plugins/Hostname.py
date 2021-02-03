@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import subprocess
-import xmlrpc.client as xmlrpc
 import tempfile
 import shutil
 import os
@@ -48,11 +47,11 @@ class Hostname:
 			# Get the version to make the correct actions 
 			# Client actions
 			#Old n4d: llxver=objects['LliurexVersion'].lliurex_version()[1].split(", ")
-			llxver=self.core.get_plugin('LliurexVersion').lliurex_version()['return'].split(", ")
+			llxver=self.core.get_plugin('LliurexVersion').lliurex_version().get('return',None).split(", ")
 			if "client" in llxver:
 				
 				#Old n4d: list_variables['HOSTNAME'] = objects['VariablesManager'].get_variable('HOSTNAME')
-				list_variables['HOSTNAME'] = self.core.get_variable('HOSTNAME')['return']
+				list_variables['HOSTNAME'] = self.core.get_variable('HOSTNAME').get('return',None)
 
 				if list_variables['HOSTNAME'] == None:
 					#Old n4d: objects['VariablesManager'].init_variable('HOSTNAME',{'hostname':'client-sense-registrar'})
@@ -120,7 +119,7 @@ class Hostname:
 				# If /etc/hostname ==||==> n4d is null
 				# then /etc/hostname -> n4d
 				#Old n4d: list_variables['HOSTNAME'] = objects['VariablesManager'].get_variable('HOSTNAME')
-				list_variables['HOSTNAME'] = self.core.get_variable('HOSTNAME')['return']
+				list_variables['HOSTNAME'] = self.core.get_variable('HOSTNAME').get('return',None)
 
 				if list_variables['HOSTNAME'] == None:
 					self.set_hostname_n4d(current_name)
@@ -192,7 +191,7 @@ class Hostname:
 			f.write(hostname+"\n")
 			f.close()
 			#subprocess.check_output(["hostname","-F",Hostname.HOSTNAME_FILE])
-			subprocess.check_output(["service","hostname","restart"])
+			subprocess.check_output(["systemctl","restart","hostname.service"])
 			#Old n4d: return {'status': True, 'msg':'[Hostname] is setted by n4d to '+hostname+'  at '+ Hostname.HOSTNAME_FILE}
 			return n4d.responses.build_successful_call_response('','[Hostname] is setted by n4d to '+hostname+'  at '+ Hostname.HOSTNAME_FILE)
 
@@ -236,7 +235,7 @@ class Hostname:
 			#Old n4d:
 			#list_variables['HOSTNAME'] = objects['VariablesManager'].get_variable('HOSTNAME')
 			#return {'status': True,'HOSTNAME':list_variables['HOSTNAME']}
-			list_variables['HOSTNAME']=self.core.get_variable('HOSTNAME')['return']
+			list_variables['HOSTNAME']=self.core.get_variable('HOSTNAME').get('return',None)
 			return n4d.responses.build_successful_call_response(list_variables['HOSTNAME'])
 		
 		except Exception as e:
