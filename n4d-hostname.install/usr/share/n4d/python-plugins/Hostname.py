@@ -6,6 +6,7 @@ import shutil
 import os
 import time
 import tarfile
+import xmlrpc.client as xmlrpc
 import n4d.server.core as n4dcore
 import n4d.responses
 from n4d.utils import get_backup_name
@@ -134,8 +135,8 @@ class Hostname:
 				if (list_variables['HOSTNAME'] == None):
 					#Old n4d:status,list_variables['HOSTNAME'] = objects['VariablesManager'].init_variable('HOSTNAME',{'HOSTNAME':'client-sense-registrar'})
 					ret=self.core.set_variable("HOSTNAME",'client-sense-registrar')
-					list_variables=ret['return']
-					if ret['status']==0:
+					list_variables=ret.get('return',None)
+					if ret.get('status',None)==0:
 						status=True
 					else:
 						status=False
