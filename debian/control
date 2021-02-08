@@ -7,6 +7,6 @@ Standards-Version: 4.1.2
 
 Package: n4d-hostname
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, n4d, n4d-lliurex-base (>=0.7)
+Depends: ${shlibs:Depends}, ${misc:Depends}, n4d
 Description:  N4D Plugin for hostname
  Pamnss plugin configuration for hostname
