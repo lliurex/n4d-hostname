@@ -7,6 +7,8 @@ import os
 import time
 import tarfile
 import xmlrpc.client as xmlrpc
+import netifaces
+import ssl
 import n4d.server.core as n4dcore
 import n4d.responses
 from n4d.utils import get_backup_name
@@ -40,35 +42,44 @@ class Hostname:
 			# get the name at n4d-vars
 			list_variables={}
 
-			
 			# get the current name
 			tmp=self.get_hostname_file()
-			status=tmp["status"]
-			current_name=tmp["HOSTNAME"]
+			if tmp["status"]:
+				current_name=tmp["HOSTNAME"]
+			else:
+				current_name="Unknown"
 			# Get the version to make the correct actions 
 			# Client actions
 			#Old n4d: llxver=objects['LliurexVersion'].lliurex_version()[1].split(", ")
+
 			llxver=self.core.get_plugin('LliurexVersion').lliurex_version().get('return',None).split(", ")
 			if "client" in llxver:
-				
+
 				#Old n4d: list_variables['HOSTNAME'] = objects['VariablesManager'].get_variable('HOSTNAME')
 				list_variables['HOSTNAME'] = self.core.get_variable('HOSTNAME').get('return',None)
 
 				if list_variables['HOSTNAME'] == None:
 					#Old n4d: objects['VariablesManager'].init_variable('HOSTNAME',{'hostname':'client-sense-registrar'})
 					self.core.set_variable('HOSTNAME','client-sense-registrar')
-				
+
 				# Connect to server to get the name
 				try:
 					# GET THE MAC ON THE SERVER 
 					# get the internal ethernet card on servers
 					addrs=netifaces.ifaddresses('eth0')
 					mac=addrs[netifaces.AF_LINK][0]['addr']
-					server = xmlrpc.ServerProxy("https://"+XMLRPC_SERVER+"/:9779")
+					context=ssl._create_unverified_context()
+					server = xmlrpc.ServerProxy("https://"+Hostname.XMLRPC_SERVER+":9779",context=context)
 					# Connect with server and make stuff
 					try:
-						status,dns_name = server.has_name("","Dnsmasq",mac)
+						#status,dns_name = server.has_name("","Dnsmasq",mac)
+						ret=server.has_name("","DnsmasqManager",mac)
+						if ret["status"]==0:
+							status=True
+							dns_name=""
+						
 					except Exception as e:
+
 						# If Server ===||===> n4d
 						# default >> n4d
 						# default >> /etc/hostname
@@ -101,6 +112,8 @@ class Hostname:
 						self.set_hostname_file(dns_name)
 						#Old n4d: return {'status':True, 'msg':'[Hostanme] hostname is setted : server != /etc/hostname'}
 						return n4d.responses.build_successful_call_response( '','[Hostname] hostname is setted : server != /etc/hostname')
+						
+						
 					
 					elif current_name != list_variables['HOSTNAME']:
 						# If n4d != /etc/hostname
@@ -110,6 +123,7 @@ class Hostname:
 						return n4d.responses.build_successful_call_response('','[Hostname] hostname is setted: n4d != /etc/hostname ')
 
 				except Exception as e:
+
 					#Old n4d: return {'status':False, 'msg':'[Hostanme] ERROR:'+str(e)}
 					return n4d.responses.build_failed_call_response('','[Hostname] ERROR:'+str(e))
 
@@ -131,7 +145,8 @@ class Hostname:
 				if current_name != list_variables['HOSTNAME']:
 					self.set_hostname_n4d(current_name)
 			# end if desktop
-			else:	
+			else:
+				print(3)
 				if (list_variables['HOSTNAME'] == None):
 					#Old n4d:status,list_variables['HOSTNAME'] = objects['VariablesManager'].init_variable('HOSTNAME',{'HOSTNAME':'client-sense-registrar'})
 					ret=self.core.set_variable("HOSTNAME",'client-sense-registrar')
@@ -192,12 +207,12 @@ class Hostname:
 			f.write(hostname+"\n")
 			f.close()
 			#subprocess.check_output(["hostname","-F",Hostname.HOSTNAME_FILE])
-			subprocess.check_output(["systemctl","restart","hostname.service"])
+			#subprocess.check_output(["systemctl","restart","hostname.service"])
 			#Old n4d: return {'status': True, 'msg':'[Hostname] is setted by n4d to '+hostname+'  at '+ Hostname.HOSTNAME_FILE}
 			return n4d.responses.build_successful_call_response('','[Hostname] is setted by n4d to '+hostname+'  at '+ Hostname.HOSTNAME_FILE)
 
 		except Exception as e:
-
+			print(e)
 			#Old n4d:return {'status': False, 'msg':'[Hostname] Hostname not setted :'+ str(e)}
 			return n4d.responses.build_failed_call_response('','[Hostname] Hostname not setted :'+ str(e))
 
