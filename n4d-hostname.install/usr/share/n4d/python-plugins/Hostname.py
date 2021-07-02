@@ -39,25 +39,28 @@ class Hostname:
 		'''
 		# If is a boot time then make the things
 		if options["boot"]:
+
 			# get the name at n4d-vars
 			list_variables={}
 
 			# get the current name
 			tmp=self.get_hostname_file()
 			if tmp["status"]:
-				current_name=tmp["HOSTNAME"]
+				current_name=tmp["return"]
 			else:
 				current_name="Unknown"
+			
+			list_variables["HOSTNAME"]=current_name
+			
 			# Get the version to make the correct actions 
 			# Client actions
 			#Old n4d: llxver=objects['LliurexVersion'].lliurex_version()[1].split(", ")
-
 			llxver=self.core.get_plugin('LliurexVersion').lliurex_version().get('return',None).split(", ")
-			if "client" in llxver:
 
+			if "client" in llxver or "client-lite" in llxver:
 				#Old n4d: list_variables['HOSTNAME'] = objects['VariablesManager'].get_variable('HOSTNAME')
 				list_variables['HOSTNAME'] = self.core.get_variable('HOSTNAME').get('return',None)
-
+				
 				if list_variables['HOSTNAME'] == None:
 					#Old n4d: objects['VariablesManager'].init_variable('HOSTNAME',{'hostname':'client-sense-registrar'})
 					self.core.set_variable('HOSTNAME','client-sense-registrar')
@@ -70,6 +73,7 @@ class Hostname:
 					mac=addrs[netifaces.AF_LINK][0]['addr']
 					context=ssl._create_unverified_context()
 					server = xmlrpc.ServerProxy("https://"+Hostname.XMLRPC_SERVER+":9779",context=context)
+
 					# Connect with server and make stuff
 					try:
 						#status,dns_name = server.has_name("","Dnsmasq",mac)
@@ -77,9 +81,8 @@ class Hostname:
 						if ret["status"]==0:
 							status=True
 							dns_name=""
-						
-					except Exception as e:
 
+					except Exception as e:
 						# If Server ===||===> n4d
 						# default >> n4d
 						# default >> /etc/hostname
@@ -123,14 +126,13 @@ class Hostname:
 						return n4d.responses.build_successful_call_response('','[Hostname] hostname is setted: n4d != /etc/hostname ')
 
 				except Exception as e:
-
 					#Old n4d: return {'status':False, 'msg':'[Hostanme] ERROR:'+str(e)}
 					return n4d.responses.build_failed_call_response('','[Hostname] ERROR:'+str(e))
 
 				
 			# end if "client"
 			
-			elif ("server" in llxver):
+			elif "server" in llxver or "server-lite" in llxver:
 				# If /etc/hostname ==||==> n4d is null
 				# then /etc/hostname -> n4d
 				#Old n4d: list_variables['HOSTNAME'] = objects['VariablesManager'].get_variable('HOSTNAME')
@@ -140,13 +142,13 @@ class Hostname:
 					self.set_hostname_n4d(current_name)
 				
 			# end if "server"
-			elif "desktop" in llxver:
+			elif "desktop" in llxver or "desktop-lite" in llxver:
 				# If /etc/hostname -> n4d 
 				if current_name != list_variables['HOSTNAME']:
 					self.set_hostname_n4d(current_name)
 			# end if desktop
 			else:
-				print(3)
+				
 				if (list_variables['HOSTNAME'] == None):
 					#Old n4d:status,list_variables['HOSTNAME'] = objects['VariablesManager'].init_variable('HOSTNAME',{'HOSTNAME':'client-sense-registrar'})
 					ret=self.core.set_variable("HOSTNAME",'client-sense-registrar')
