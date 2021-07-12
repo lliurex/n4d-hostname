@@ -45,7 +45,7 @@ class Hostname:
 
 			# get the current name
 			tmp=self.get_hostname_file()
-			if tmp["status"]:
+			if tmp["status"]==0:
 				current_name=tmp["return"]
 			else:
 				current_name="Unknown"
@@ -60,11 +60,15 @@ class Hostname:
 			if "client" in llxver or "client-lite" in llxver:
 				#Old n4d: list_variables['HOSTNAME'] = objects['VariablesManager'].get_variable('HOSTNAME')
 				list_variables['HOSTNAME'] = self.core.get_variable('HOSTNAME').get('return',None)
-				
+				if list_variables["HOSTNAME"] != type(str):
+					list_variables["HOSTNAME"]=None
 				if list_variables['HOSTNAME'] == None:
 					#Old n4d: objects['VariablesManager'].init_variable('HOSTNAME',{'hostname':'client-sense-registrar'})
-					self.core.set_variable('HOSTNAME','client-sense-registrar')
-
+					list_variables["HOSTNAME"]=current_name
+				
+				dns_name=None
+				status=False
+				
 				# Connect to server to get the name
 				try:
 					# GET THE MAC ON THE SERVER 
@@ -80,14 +84,13 @@ class Hostname:
 						ret=server.has_name("","DnsmasqManager",mac)
 						if ret["status"]==0:
 							status=True
-							dns_name=""
+							dns_name=ret["return"]
 
 					except Exception as e:
 						# If Server ===||===> n4d
 						# default >> n4d
 						# default >> /etc/hostname
-						self.set_hostname_n4d('client-sense-registrar')
-						self.set_hostname_file('client-sense-registrar')
+						self.set_hostname_n4d(current_name)
 						#Old n4d: return {'status':True, 'msg':'[Hostanme] Server is unreachable and client is not registered'}
 						return n4d.responses.build_successful_call_response('','[Hostname] Server is unreachable and client is not registered')
 
@@ -96,12 +99,11 @@ class Hostname:
 						# If Server ======> n4d (Not Registered)
 						# default >> n4d
 						# default >> /etc/hostname
-						self.set_hostname_n4d(dns_name)
-						self.set_hostname_file(dns_name)
+						self.set_hostname_n4d(list_variables["HOSTNAME"])
 						#Old n4d:return {'status':True, 'msg':'[Hostanme] Client is not registered'}
 						return n4d.responses.build_successful_call_response('','[Hostname] Client is not registered')
 						
-					if current_name == dns_name and current_name == list_variables['HOSTNAME']:
+					if current_name == dns_name:
 						# All is done and correct
 						# N4D == /etc/hostname == DNSMASQ
 						#Old n4d: return {'status':True, 'msg':'[Hostanme] All is in place'}
@@ -121,11 +123,12 @@ class Hostname:
 					elif current_name != list_variables['HOSTNAME']:
 						# If n4d != /etc/hostname
 						# n4d >>  /etc/hostname
-						self.set_hostname_file(list_variables['HOSTNAME'])
+						self.set_hostname_file(current_name)
 						#Old n4d:return {'status':True, 'msg':'[Hostanme] hostname is setted: n4d != /etc/hostname '}
 						return n4d.responses.build_successful_call_response('','[Hostname] hostname is setted: n4d != /etc/hostname ')
 
 				except Exception as e:
+					print(e)
 					#Old n4d: return {'status':False, 'msg':'[Hostanme] ERROR:'+str(e)}
 					return n4d.responses.build_failed_call_response('','[Hostname] ERROR:'+str(e))
 
@@ -214,7 +217,6 @@ class Hostname:
 			return n4d.responses.build_successful_call_response('','[Hostname] is setted by n4d to '+hostname+'  at '+ Hostname.HOSTNAME_FILE)
 
 		except Exception as e:
-			print(e)
 			#Old n4d:return {'status': False, 'msg':'[Hostname] Hostname not setted :'+ str(e)}
 			return n4d.responses.build_failed_call_response('','[Hostname] Hostname not setted :'+ str(e))
 
@@ -272,7 +274,6 @@ class Hostname:
 			f=open(Hostname.HOSTNAME_FILE,"r")
 			hostname=f.read()
 			f.close()
-		
 			#Old n4d: return {'status': True, 'HOSTNAME':hostname.rstrip()}
 			return n4d.responses.build_successful_call_response(hostname.rstrip())
 
@@ -315,7 +316,7 @@ class Hostname:
 			#for
 			
 			tar.close()
-			print("Backup generated in %s" % file_path	)
+			
 			#Old n4d: return [True,file_path]
 			return n4d.responses.build_successful_call_response(file_path)
 			
@@ -360,8 +361,7 @@ class Hostname:
 				
 				
 			
-			print("File is restored in %s" % self.backup_files)
-			
+			#print("File is restored in %s" % self.backup_files)
 			#Old n4d: return [True,""]
 			return n4d.responses.build_successful_call_response()
 
