@@ -1,0 +1,12 @@
+Source: n4d-hostname
+Section: misc
+Priority: standard
+Maintainer: Equipo LliureX <lliurex@gva.es>
+Build-Depends: debhelper (>= 10), n4d-dev, python3-minimal
+Standards-Version: 4.1.2
+
+Package: n4d-hostname
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, n4d
+Description:  N4D Plugin for hostname
+ Pamnss plugin configuration for hostname
