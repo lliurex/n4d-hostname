@@ -1,3 +1,9 @@
+n4d-hostname (0.44) jammy; urgency=medium
+
+  * Initial release for Jammy
+
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Mon, 04 Sep 2023 12:08:09 +0200
+
 n4d-hostname (0.34) focal; urgency=medium
 
   * Fixed hostname management in clients
